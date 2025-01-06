@@ -1,0 +1,26 @@
+---
+
+- hosts: all
+  become: true
+  tasks:
+
+  - name: Copy default HTML file to .OLD
+    copy: remote_src=True src=/var/www/html/index.html dest=/var/www/html/index.old
+
+  - name: Remove old HTML file
+    file: path=/var/www/html/index.html state=absent
+
+  - name: rename default HTML file to .OLD 
+    apt:
+
+  - name: Write a PHP script as default page
+    blockinfile:
+      path:  /var/www/html/index.php
+      create: yes
+      marker: ""
+      block: |
+        <h1>Greetings from <?php print gethostname(); ?>
+        <br>
+        <?php phpinfo(); ?>
+        <br>
+      marker_end: ""
