@@ -40,6 +40,23 @@
       state: latest
     when: ansible_distribution in ["Rocky", "CentOS"]
 
+  - name: start httpd (Rocky)
+    tags: httpd, apache, Rocky
+    service:
+      name: httpd
+      state: started
+      enabled: yes
+    when: ansible_distribution in ["Rocky", "CentOS"]
+
+  - name: change e-mail address for admin
+    tags:  httpd, apache, Rocky
+    lineinfile: 
+      path: /etc/httpd/conf/httpd.conf
+      regexp: '^ServerAdmin'
+      line:  ServerAdmin somebody@somewhere.net
+    when: ansible_distribution in ["Rocky", "CentOS"]
+    register: httpd
+
   - name: copy deault html file for site
     tags:  apache, apache2,httpd
     copy:
@@ -75,4 +92,3 @@
     package:
       name: samba
       state: latest
-
