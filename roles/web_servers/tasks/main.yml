@@ -1,43 +1,48 @@
-- name: install apache and php packages for Ubuntu
-  tags: apache, apache2, ubuntu
-  apt:
+- name: install apache and php packages
+  tags: apache, apache2, httpd,  php
+  package:
     name:
-    - apache2
-    - libapache2-mod-php
+    - "{{ apache_package_name }}"
+    - "{{ php_package_name }}"
     state: latest
-  when: ansible_distribution in ["Debian", "Ubuntu"]
 
-- name: install apache and php packages for Rocky Linux
-  tags: apache, rocky, httpd
-  dnf:
-    name:
-    - httpd
-    - php
-    state: latest
-  when: ansible_distribution in ["Rocky", "CentOS"]
-
-- name: start httpd (Rocky)
-  tags: httpd, apache, Rocky
+- name: start and enable apache service 
+  tags: httpd, apache
   service:
-    name: httpd
+    name: "{{ apache_service }}"
     state: started
     enabled: yes
-  when: ansible_distribution in ["Rocky", "CentOS"]
 
 - name: change e-mail address for admin
-  tags:  httpd, apache, Rocky
+  tags:  httpd, apache, rocky, centos
   lineinfile:
     path: /etc/httpd/conf/httpd.conf
     regexp: '^ServerAdmin'
-    line:  ServerAdmin somebody@somewhere.net
+    line:  ServerAdmin somebody@somewhere.com
   when: ansible_distribution in ["Rocky", "CentOS"]
-  register: httpd
+  notify: restart_apache
 
 - name: copy deault html file for site
-  tags:  apache, apache2,httpd
+  tags:  apache, httpd, rocky, ubuntu
   copy:
     src: default_site.html
     dest: /var/www/html/index.html
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Write a PHP script as default page
+  tags:  apache,httpd
+  blockinfile:
+    path:  /var/www/html/index.php
+    create: yes
+    marker: ""
+    block: |
+      <h1>Greetings from <?php print gethostname(); ?>
+      <br>
+      <?php phpinfo(); ?>
+      <br>
+    marker_end: ""
     owner: root
     group: root
     mode: 0644
