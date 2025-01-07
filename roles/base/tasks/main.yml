@@ -1,0 +1,5 @@
+- name: add ssh key for gunter
+  authorized_key:
+    user: gunter
+    key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIH0EDH7IXJs3TNE4ZGieKRIiGE6aCCk6e04922uatHDd root@Ansible"
+

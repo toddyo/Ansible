@@ -1,0 +1,13 @@
+- name: install samba package
+  tags: samba
+  package:
+    name: samba
+    state: latest
+
+- name: start samba (Rocky)
+  tags: samba, Rocky
+  service:
+    name: samba
+    state: started
+    enabled: yes
+  when: ansible_distribution in ["Rocky", "CentOS"]
