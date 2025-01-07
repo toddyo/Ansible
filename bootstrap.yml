@@ -1,0 +1,45 @@
+---
+
+- hosts: all
+  become: true
+  pre_tasks:
+
+  - name: update repo cache (Rocky,CentOS)
+    tags: always
+    dnf:
+      update_only: yes
+      update_cache: yes
+    when: ansible_distribution in ["Rocky", "CentOS"]
+
+  - name: update repo cache (Debian/Ubuntu)
+    tags: always
+    apt:
+      upgrade: dist
+      update_cache: yes
+    when: ansible_distribution in ["Debian", "Ubuntu"]
+
+- hosts: all
+  become: true
+  tasks:
+
+  - name: create gunter user
+    tags: always
+    user:
+      name: gunter
+      groups: root
+
+  - name: add ssh key for gunter
+    tags: always
+    authorized_key:
+      user: gunter
+      key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIH0EDH7IXJs3TNE4ZGieKRIiGE6aCCk6e04922uatHDd root@Ansible"
+
+  - name: add sudoers file for gunter
+    tags: always
+    copy:
+      src: sudoer_gunter
+      dest: /etc/sudoers.d/gunter
+      owner: root
+      group: root
+      mode: 0440
+

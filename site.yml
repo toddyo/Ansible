@@ -4,19 +4,29 @@
   become: true
   pre_tasks:
 
-  - name: install updates (Rocky,CentOS)
+  - name: update repo cache (Rocky,CentOS)
     tags: always
     dnf:
       update_only: yes
       update_cache: yes
     when: ansible_distribution in ["Rocky", "CentOS"]
 
-  - name: install updates (Debian/Ubuntu)
+  - name: update repo cache (Debian/Ubuntu)
     tags: always
     apt:
       upgrade: dist
       update_cache: yes
     when: ansible_distribution in ["Debian", "Ubuntu"]
+
+- hosts: all
+  become: true
+  tasks:
+
+  - name: add ssh key for gunter
+    tags: always
+    authorized_key:
+      user: gunter
+      key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIH0EDH7IXJs3TNE4ZGieKRIiGE6aCCk6e04922uatHDd root@Ansible"
 
 - hosts: web_servers
   become: true
