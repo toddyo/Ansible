@@ -3,3 +3,12 @@
     user: gunter
     key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIH0EDH7IXJs3TNE4ZGieKRIiGE6aCCk6e04922uatHDd root@Ansible"
 
+- name: generate sshd_config file from template
+  tags: ssh
+  template:
+    src: "{{ ssh_template_file }}"
+    dest: /etc/ssh/sshd_config
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart_sshd
