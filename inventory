@@ -1,7 +1,10 @@
-[servers]
+[web_servers]
 192.168.87.21
+192.168.86.18
+
+[db_servers]
 192.168.87.22
+
+[file_servers]
 192.168.87.23
 
-[rocky_linux]
-192.168.86.18

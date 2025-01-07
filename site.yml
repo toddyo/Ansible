@@ -1,0 +1,62 @@
+---
+
+- hosts: all
+  become: true
+  pre_tasks:
+
+  - name: install updates (Rocky,CentOS)
+    dnf:
+      update_only: yes
+      update_cache: yes
+    when: ansible_distribution in ["Rocky", "CentOS"]
+
+  - name: install updates (Debian/Ubuntu)
+    apt:
+      upgrade: dist
+      update_cache: yes
+    when: ansible_distribution in ["Debian", "Ubuntu"]
+
+- hosts: web_servers
+  become: true
+  tasks:
+
+  - name: install apache and php packages for Ubuntu
+    apt:
+      name: 
+      - apache2
+      - libapache2-mod-php
+      state: latest
+    when: ansible_distribution in ["Debian", "Ubuntu"]
+
+  - name: install apache and php packages for Rocky Linux
+    dnf:
+      name:
+      - httpd
+      - php
+      state: latest
+    when: ansible_distribution in ["Rocky", "CentOS"]
+
+- hosts: db_servers
+  become: true
+  tasks:
+
+  - name: install httpd package (Rocky/CentOS)
+    dnf:
+      name: mariadb
+      state: latest
+    when: ansible_distribution in ["Rocky", "CentOS"]
+
+  - name: install mariadb server
+    apt:
+      name: mariadb-server
+      state: latest
+    when: ansible_distribution in ["Debian", "Ubuntu"]
+
+- hosts: file_servers
+  become: true
+  tasks:
+  - name: install samba package
+    package:
+      name: samba
+      state: latest
+

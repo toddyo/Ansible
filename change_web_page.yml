@@ -1,6 +1,6 @@
 ---
 
-- hosts: all
+- hosts: web_servers
   become: true
   tasks:
 
@@ -9,9 +9,6 @@
 
   - name: Remove old HTML file
     file: path=/var/www/html/index.html state=absent
-
-  - name: rename default HTML file to .OLD 
-    apt:
 
   - name: Write a PHP script as default page
     blockinfile:
