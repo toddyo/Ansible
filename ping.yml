@@ -8,6 +8,4 @@
 
     - name: ping
       shell: /usr/bin/ping -c 1 -w 2 8.8.8.8
-      args:
-         executable: /usr/bin
       ignore_errors: true
