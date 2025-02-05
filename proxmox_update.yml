@@ -1,0 +1,19 @@
+---
+ 
+- hosts: all
+  become: false
+  pre_tasks:
+
+  - name: update repository index (Debian/Ubuntu)
+    tags: always
+    apt:
+      update_cache: yes
+    changed_when: true
+    when: ansible_distribution in ["Debian", "Ubuntu"]
+
+  - name: Perform upgrades (Debian/Ubuntu)
+    tags: always
+    apt:
+      name: "*"
+      state: latest
+    when: ansible_distribution in ["Debian", "Ubuntu"]
